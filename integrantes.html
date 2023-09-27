@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+        <title>DNOO37 | EVALUACIÓN Nº2</title>
+    </head>
+    <body>
+        <nav>
+            <h1><a href="index.html">Isidora Muñoz</a></h1>
+            <select onchange="location = this.value;">
+                <option value="index.html">INDEX</option>
+                <option value="integrantes.html" selected>INTEGRANTES</option>
+                <option value="openweather.html">OPEN WEATHER</option>
+                <option value="picture.html">PICTURE OF THE DAY</option>
+                <option value="sismico.html">SÍSMICO</option>
+            </select>
+        </nav>
+        <header style="display: none;">
+            <div>Marque uno:</div>
+            <div><input type="radio" name="selecciona" value="todos" checked />Todos</div>
+            <div><input type="radio" name="selecciona" value="Tauro" />Tauro</div>
+            <div><input type="radio" name="selecciona" value="Géminis" />Géminis</div>
+            <div><input type="radio" name="selecciona" value="Sagitario" />Sagitario</div>
+        </header>
+        <aside></aside>
+        <main></main>
+        <script>
+            const alternativas = document.querySelector("header");
+            const detalles = document.querySelector("aside");
+            const respuesta = document.querySelector("main");
+            var datos;
+            async function estudiantes() {
+                const data = await fetch("https://raw.githubusercontent.com/profesorfaco/dno037-2023-2/main/clase-07/_curso.json");
+                datos = await data.json();
+                alternativas.removeAttribute("style");
+                console.log(datos);
+                signos = [];
+                datos.forEach((x) => {
+                    if(x.github !== ""){
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo
+                        }</p></div></article>`;
+                        signos.push(x.zodiaco.signo);
+                    }
+                });
+
+
+    const counts = {};
+    signos.forEach((x) => {
+      counts[x] = (counts[x] || 0) + 1;
+    });
+    console.log(counts)
+
+
+
+            }
+            estudiantes().catch((error) => console.error(error));
+
+            function compatibilidad(valor) {
+                respuesta.innerHTML = ``;
+                detalles.innerHTML = ``;
+
+                //Lo que sigue lo saqué de https://www.clara.es/
+
+                if (valor == "Tauro") {
+                    about =
+                        "<em>Tauro</em>: Como signo de tierra, el toro de la esfera zodiacal es conocido por mantener los pies muy bien puestos en el suelo, son personas prácticas y responsables. Son una constante en la vida de todos, este sentido de la fiabilidad es lo que ayuda a sus amigos recurran a ellos cuando las cosas se ponen difíciles.";
+                } else if (valor == "Géminis") {
+                    about =
+                        "<em>Géminis</em>: Las gemelas del zodiaco tienen una refrescante dualidad que les hace atraer a la gente como un imán. Inquisitivas, pero adaptables, juguetonas, pero sensibles, ¡así eres tú, Géminis! Algunos podrían llamarte indecisa, pero este sentido de la curiosidad por lo que el mundo tiene que ofrecerte significa que las cosas nunca serán aburridas para ti.";
+                } else if (valor == "Sagitario") {
+                    about =
+                        "<em>Sagitario</em>: Como signo de fuego, tu búsqueda del conocimiento está destinada a llevarte a grandes lugares. Espíritu errante, tu personalidad inconformista no echa raíces fácilmente, no cuando todavía te queda un mundo por descubrir. ";
+                } else {
+                    about = "Diseño y nuevos medios."
+                }
+
+                detalles.innerHTML += `<div><p>${about}</p></div>`;
+
+                datos.forEach((x) => {
+                    if (valor == x.zodiaco.signo) {
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo
+                        }</p></div></article>`;
+                    }
+                });
+            }
+
+            const seleccionado = document.querySelectorAll('input[name="selecciona"]');
+
+            seleccionado.forEach((i) => {
+                i.addEventListener("change", function () {
+                    var valor = this.value;
+                    if (valor !== "todos"){
+                        console.log(valor);
+                        compatibilidad(valor);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
